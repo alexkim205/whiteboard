@@ -1,6 +1,7 @@
-import {actions, defaults, kea, key, reducers, path, selectors, props, listeners} from "kea";
-import {BrushSize, CanvasInteractionHandlers, EMPTY_CANVAS_INTERACTION_HANDLERS, Tool} from "../types"
-import type { canvasLogicType } from "./canvasLogicType";
+import {actions, connect, defaults, kea, key, listeners, path, props, reducers, selectors} from "kea";
+import {BrushSize, CanvasInteractionHandlers, CanvasState, EMPTY_CANVAS_INTERACTION_HANDLERS, Tool} from "../types"
+import type {canvasLogicType} from "./canvasLogicType";
+import {addableCanvasLogic} from "../blocks/addableCanvasLogic";
 
 export interface CanvasLogicProps {
     id: number // Canvas id that can be stored in the backend
@@ -10,17 +11,22 @@ export const canvasLogic = kea<canvasLogicType>([
     props({} as CanvasLogicProps),
     path(["src", "canvasLogic"]),
     key((props) => props.id ?? 'global'),
+    connect((props: CanvasLogicProps)=> ({
+        actions: [addableCanvasLogic(props), ['addElement']],
+        values: [addableCanvasLogic(props), ['elementToAdd']],
+    })),
     defaults(() => ({
         canvas: null as HTMLCanvasElement | null,
         tool: Tool.Draw as Tool,
         mouseDown: false,
-        brushSize: BrushSize.Small as BrushSize
+        brushSize: BrushSize.Small as BrushSize,
+        canvasState: CanvasState.Editing as CanvasState
     })),
     actions(() => ({
         initCanvas:(canvas: HTMLCanvasElement | null) => ({canvas}),
         selectTool: (tool: Tool) => ({tool}),
         setMouseDown: (mouseDown: boolean) => ({mouseDown}),
-        setBrushSize: (brushSize: number) => ({brushSize})
+        setBrushSize: (brushSize: number) => ({brushSize}),
     })),
     reducers(() => ({
         canvas: {
@@ -36,13 +42,21 @@ export const canvasLogic = kea<canvasLogicType>([
             setBrushSize: (_, {brushSize}) => brushSize
         }
     })),
-    listeners(({values}) => ({
+    listeners(({values, actions}) => ({
         initCanvas: () => {
             if (values.ctx && values.canvas) {
                 // Initialize canvas with a white background and define line styles
                 values.ctx.fillStyle="#FFFFFF";
                 values.ctx.fillRect(0,0,values.canvas.width,values.canvas.height);
                 values.ctx.lineCap = "round"
+            }
+        },
+        selectTool: ({tool}) => {
+            // Conditionally render addable canvas elements depending on which tool is selected
+            if (tool === Tool.Text || tool === Tool.Emoji) {
+                actions.addElement(tool)
+            } else {
+                actions.addElement(null)
             }
         }
     })),
@@ -76,6 +90,14 @@ export const canvasLogic = kea<canvasLogicType>([
                         onMouseUp: () => {
                             actions.setMouseDown(false)
                             ctx.closePath()
+                        }
+                    }
+                }
+                if (tool === Tool.Text) {
+                    return {
+                        onMouseUp: () => {
+                            actions.setMouseDown(false)
+                            actions.addElement(Tool.Text)
                         }
                     }
                 }

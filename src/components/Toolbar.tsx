@@ -1,36 +1,8 @@
-import {LuEraser, LuImage, LuPencil, LuSmile, LuTextCursor} from "react-icons/lu";
+import {LuEraser, LuPencil, LuSmile, LuTextCursor} from "react-icons/lu";
 import {BrushSize, Tool} from "../types";
 import {useActions, useValues} from "kea";
 import {canvasLogic} from "./canvasLogic";
 import clsx from "clsx";
-
-const tools = [
-    {
-        label: "Draw",
-        value: Tool.Draw,
-        Icon: LuPencil
-    },
-    {
-        label: "Erase",
-        value: Tool.Erase,
-        Icon: LuEraser
-    },
-    {
-        label: "Text",
-        value: Tool.Text,
-        Icon: LuTextCursor
-    },
-    {
-        label: "Image",
-        value: Tool.Image,
-        Icon: LuImage
-    },
-    {
-        label: "Emoji",
-        value: Tool.Emoji,
-        Icon: LuSmile
-    }
-]
 
 const brushSizes = [
     {
@@ -47,9 +19,34 @@ const brushSizes = [
     },
 ]
 
+export const TOOLBAR_HEIGHT = 98
+
 export function Toolbar(): JSX.Element {
     const {selectTool, setBrushSize} = useActions(canvasLogic)
     const {tool, brushSize} = useValues(canvasLogic)
+
+    const tools = [
+        {
+            label: "Draw",
+            value: Tool.Draw,
+            Icon: LuPencil
+        },
+        {
+            label: "Erase",
+            value: Tool.Erase,
+            Icon: LuEraser
+        },
+        {
+            label: "Text",
+            value: Tool.Text,
+            Icon: LuTextCursor,
+        },
+        {
+            label: "Emoji",
+            value: Tool.Emoji,
+            Icon: LuSmile
+        }
+    ]
 
     return (
         <div id="toolbar" className="flex flex-row justify-between p-4 border-b-2 border-black">
@@ -57,8 +54,9 @@ export function Toolbar(): JSX.Element {
                 {tools.map(({label, value, Icon}) => (
                     <div
                         className={clsx(tool === value && "border-black", "duration-75 transition-all hover:scale-105 border-2 hover:border-black rounded-md")}
-                        key={label} title={label} onClick={() => {
-                        selectTool(value)
+                        key={label} title={label}
+                        onClick={() => {
+                            selectTool(value)
                     }}>
                         <Icon className={clsx("text-6xl p-3")}/>
                     </div>

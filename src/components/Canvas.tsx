@@ -1,6 +1,8 @@
 import {useLayoutEffect, useRef} from "react";
 import {useActions, useValues} from "kea";
 import {canvasLogic} from "./canvasLogic";
+import {TOOLBAR_HEIGHT} from "./Toolbar";
+import {AddableCanvas} from "./AddableCanvas";
 
 export function Canvas(): JSX.Element {
     const {initCanvas} = useActions(canvasLogic)
@@ -15,13 +17,16 @@ export function Canvas(): JSX.Element {
     }, [ref])
 
     return (
+        <>
             <canvas
                 id='whiteboard'
                 ref={ref}
-                className="grow"
+                className="grow z-10"
                 width={window.innerWidth}
-                height={window.innerHeight - 98}
+                height={window.innerHeight - TOOLBAR_HEIGHT}
                 {...canvasInteractionHandlers}
             />
+            <AddableCanvas/>
+        </>
     )
 }
