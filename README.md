@@ -2,7 +2,7 @@
 
 ## Intro
 
-Hi Classkick team! It was great talking with Sandip over video, and I thank you for taking the time to review my take home assignment. Looking forward to hearing from you soon.
+Hi Classkick team! It was great talking with Sandip over video, and thank you for taking the time to review my take home assignment. Looking forward to hearing from you soon.
 
 ## Setup
 
