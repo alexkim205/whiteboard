@@ -1,5 +1,7 @@
 # Classkick Front End Engineering Take Home Project - Alex Kim
 
+![hero.png](public%2Fhero.png)
+
 ## Intro
 
 Hi Classkick team! It was great talking with Sandip over video, and thank you for taking the time to review my take home assignment. Looking forward to hearing from you soon.
