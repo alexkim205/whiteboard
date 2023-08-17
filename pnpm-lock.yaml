@@ -11,6 +11,9 @@ dependencies:
   kea:
     specifier: ^3.1.5
     version: 3.1.5(react@18.2.0)
+  kea-subscriptions:
+    specifier: ^3.0.0
+    version: 3.0.0(kea@3.1.5)
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -2827,6 +2830,14 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
     dev: true
+
+  /kea-subscriptions@3.0.0(kea@3.1.5):
+    resolution: {integrity: sha512-26iEvvAV6+s1YtFajjDndP/ht32Rx2IuElr8O6yUsOuMSPLn55/EpRIMEyeFu0Amim7BOVfn9MoKFsSSlr/Ilw==}
+    peerDependencies:
+      kea: '>= 3'
+    dependencies:
+      kea: 3.1.5(react@18.2.0)
+    dev: false
 
   /kea-typegen@3.3.0(typescript@4.9.5):
     resolution: {integrity: sha512-FA7QuCAIIZNMkOmJiI/lfK/ar2QbOtlwVYC4X/GAyZ4Omr4U0QjCjHZaDAbjOMTqsQuMMAl1tCTbhCN6r163Mw==}

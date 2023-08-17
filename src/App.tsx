@@ -1,10 +1,15 @@
 import {Toolbar} from "./components/Toolbar";
+import {Canvas} from "./components/Canvas";
+import {Mouse} from "./components/Mouse";
 
 function App() {
+
   return (
-    <main className="h-screen">
-<Toolbar/>
-    </main>
+    <div className="flex flex-col w-screen h-screen">
+        <Mouse/>
+        <Toolbar/>
+        <Canvas/>
+    </div>
   )
 }
 
