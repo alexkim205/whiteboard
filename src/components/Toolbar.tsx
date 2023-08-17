@@ -3,6 +3,7 @@ import {BrushSize, Tool} from "../types";
 import {useActions, useValues} from "kea";
 import {canvasLogic} from "./canvasLogic";
 import clsx from "clsx";
+import {addableCanvasLogic} from "../blocks/addableCanvasLogic";
 
 const brushSizes = [
     {
@@ -19,11 +20,32 @@ const brushSizes = [
     },
 ]
 
+const emojis = [
+    {
+        label: "Heart",
+        value: "❤️",
+    },
+    {
+        label: "Thumbs up",
+        value: "👍",
+    },
+    {
+        label: "Laugh",
+        value: "😂",
+    },
+    {
+        label: "Celebrate",
+        value: "🎉"
+    }
+]
+
 export const TOOLBAR_HEIGHT = 98
 
 export function Toolbar(): JSX.Element {
     const {selectTool, setBrushSize} = useActions(canvasLogic)
-    const {tool, brushSize} = useValues(canvasLogic)
+    const {tool, brushSize, isDrawableTool} = useValues(canvasLogic)
+    const {elementToAdd} = useValues(addableCanvasLogic)
+    const {setElement} = useActions(addableCanvasLogic)
 
     const tools = [
         {
@@ -63,13 +85,22 @@ export function Toolbar(): JSX.Element {
                 ))}
             </div>
             <div className="flex flex-row gap-4">
-                {brushSizes.map(({label, value}) => (
+                {isDrawableTool && brushSizes.map(({label, value}) => (
                     <div
                         className={clsx(brushSize === value && "border-black", "flex justify-center items-center w-16 h-16 duration-75 transition-all hover:scale-105 border-2 hover:border-black rounded-md")}
                         key={label} title={label} onClick={() => {
                         setBrushSize(value)
                     }}>
                         <div className="shrink-0 bg-black rounded-full" style={{width: value, height: value}}/>
+                    </div>
+                ))}
+                {tool === Tool.Emoji && elementToAdd && emojis.map(({label, value}) => (
+                    <div
+                        className={clsx(value === elementToAdd.value && "border-black", "text-4xl flex justify-center items-center w-16 h-16 duration-75 transition-all hover:scale-105 border-2 hover:border-black rounded-md")}
+                        key={label} title={label} onClick={() => {
+                        setElement({value})
+                    }}>
+                        {value}
                     </div>
                 ))}
             </div>

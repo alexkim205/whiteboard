@@ -3,6 +3,8 @@ import {useActions, useValues} from "kea";
 import {canvasLogic} from "./canvasLogic";
 import {TOOLBAR_HEIGHT} from "./Toolbar";
 import {AddableCanvas} from "./AddableCanvas";
+import {DndProvider} from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
 
 export function Canvas(): JSX.Element {
     const {initCanvas} = useActions(canvasLogic)
@@ -26,7 +28,9 @@ export function Canvas(): JSX.Element {
                 height={window.innerHeight - TOOLBAR_HEIGHT}
                 {...canvasInteractionHandlers}
             />
-            <AddableCanvas/>
+            <DndProvider backend={HTML5Backend}>
+                <AddableCanvas/>
+            </DndProvider>
         </>
     )
 }

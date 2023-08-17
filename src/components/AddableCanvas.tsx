@@ -1,26 +1,41 @@
 import {TOOLBAR_HEIGHT} from "./Toolbar";
-import {ElementComponentProps, Tool} from "../types";
+import {DragItem, ElementComponentProps, Tool} from "../types";
 import {TextElement} from "../blocks/TextElement";
 import {EmojiElement} from "../blocks/EmojiElement";
 import {useActions, useValues} from "kea";
 import {addableCanvasLogic} from "../blocks/addableCanvasLogic";
-import {canvasLogic} from "./canvasLogic";
+import {useDrop, XYCoord} from "react-dnd";
+import {mouseLogic} from "./mouseLogic";
 
 export function AddableCanvas(): JSX.Element {
     const {elementToAdd} = useValues(addableCanvasLogic)
     const {setElement} = useActions(addableCanvasLogic)
-    const {setMouseDown} = useActions(canvasLogic)
-    const {mouseDown} = useValues(canvasLogic)
+    const {setMouseDown, setPosition} = useActions(mouseLogic)
+
+    const [, drop] = useDrop(
+        () => ({
+            accept: [Tool.Text, Tool.Emoji],
+            drop(item: DragItem, monitor) {
+                if (!elementToAdd) return
+                const delta = monitor.getDifferenceFromInitialOffset() as XYCoord
+                const x = Math.round(item.left + delta.x)
+                const y = Math.round(item.top + delta.y)
+                setElement({placement: {...elementToAdd.placement, x, y}})
+                setMouseDown(false)
+                setPosition(monitor.getClientOffset() as XYCoord)
+            },
+        }),
+        [elementToAdd],
+    )
 
     function renderElement(): JSX.Element {
         if (!elementToAdd) return <></>
         const sharedProps: ElementComponentProps = {
             ...elementToAdd,
+            id: `new-${elementToAdd.type}`,
             onChange: (element) => {
-                console.log("DOOOO", element)
                 setElement(element)
             },
-            isDragging: mouseDown
         }
         if (elementToAdd.type === Tool.Text) {
             return <TextElement {...sharedProps}/>
@@ -31,7 +46,8 @@ export function AddableCanvas(): JSX.Element {
 
     return elementToAdd ? (
         <div
-            id="whiteboard--adding-element" className="z-20 absolute inset-x-0 bottom-0 bg-transparent"
+            ref={drop}
+            id="whiteboard--adding-element" className="overflow-hidden z-20 absolute inset-x-0 bottom-0 bg-transparent cursor-none"
             style={{top: TOOLBAR_HEIGHT}}
             onMouseDown={() => setMouseDown(true)}
             onMouseUp={() => setMouseDown(false)}

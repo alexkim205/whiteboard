@@ -3,6 +3,7 @@ import {CanvasLogicProps} from "../components/canvasLogic";
 import {AddableElement, AddableTool, Tool} from "../types";
 import {TOOLBAR_HEIGHT} from "../components/Toolbar";
 import type { addableCanvasLogicType } from "./addableCanvasLogicType";
+import {EMOJI_PADDING, EMOJI_SIZE} from "./EmojiElement";
 
 export const addableCanvasLogic = kea<addableCanvasLogicType>([
     path(["src", "components", "addableCanvasLogic"]),
@@ -39,10 +40,10 @@ export const addableCanvasLogic = kea<addableCanvasLogicType>([
                         type: Tool.Emoji,
                         value: "❤️",
                         placement: {
-                            x: window.innerWidth / 2 - 50,
-                            y: (window.innerHeight - TOOLBAR_HEIGHT) / 2 - 50,
-                            width: 100,
-                            height: 100
+                            x: window.innerWidth / 2 - (EMOJI_SIZE + 2 * EMOJI_PADDING) / 2,
+                            y: (window.innerHeight - TOOLBAR_HEIGHT) / 2 - (EMOJI_SIZE + 2 * EMOJI_PADDING) / 2,
+                            width: EMOJI_SIZE + 2 * EMOJI_PADDING,
+                            height: EMOJI_SIZE + 2 * EMOJI_PADDING
                         }
                     }
                 }

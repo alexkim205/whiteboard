@@ -1,50 +1,32 @@
 import clsx from "clsx";
-import {ElementComponentProps} from "../types";
-import {useState} from "react";
+import {ElementComponentProps, Tool} from "../types";
+import {useDrag} from "react-dnd";
+export const TEXT_SIZE = 72 // corresponds to text-7xl in tailwindcss
+export const TEXT_PADDING_X = 32
+export const TEXT_PADDING_Y = 39
 
-const dragImg = new Image(0,0);
-dragImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+export const BORDER_WIDTH = 4
 
-export function TextElement({value, onChange, className, placement}: ElementComponentProps): JSX.Element {
-    const [dragging, setDragging] = useState(false)
-    const [initialPlacement, setInitialPlacement] = useState({x: 0, y: 0})
-    const [currentPlacement, setCurrentPlacement] = useState({x: placement.x, y: placement.y})
-
-    console.log("DRAGGIN PLACEENT", value, onChange, className, dragging, initialPlacement, currentPlacement)
+export function TextElement({id, value, onChange, className, placement}: ElementComponentProps): JSX.Element {
+    const [{ isDragging }, drag] = useDrag(
+        () => ({
+            type: Tool.Text,
+            item: { id, left: placement.x, top: placement.y },
+            collect: (monitor) => ({
+                isDragging: monitor.isDragging(),
+            }),
+        }),
+        [id, placement.x, placement.y],
+    )
 
     return (
         <input
-            draggable
+            ref={drag}
             value={value}
-            className={clsx(className, "absolute border-dashed border text-7xl px-8 py-4 cursor-none")}
+            className={clsx(className, "absolute border-dashed font-medium border-black border-4 text-7xl cursor-none", isDragging && "invisible")}
             autoFocus
             onChange={e => onChange({value: e.target.value})}
-            onDragStart={(e) => {
-                e.dataTransfer.setDragImage(dragImg, 0, 0)
-                setDragging(true)
-                setInitialPlacement({
-                    x: e.pageX,
-                    y: e.pageY
-                })
-                setCurrentPlacement({
-                    x: e.clientX,
-                    y: e.clientY
-                })
-            }}
-            onDragEnd={() => {
-                setDragging(false)
-            }}
-            onDrag={(e) => {
-                if (e.clientY ===0 && e.clientX === 0) return
-                setCurrentPlacement({
-                    x: e.clientX,
-                    y: e.clientY
-                })
-            }}
-            style={{
-                transform: `translate(${currentPlacement.x - initialPlacement.x}px, ${currentPlacement.y - initialPlacement.y}px)`,
-                transition: dragging ? '0s' : '200ms'
-            }}
+            style={{ left: placement.x, top: placement.y, width: placement.width, height: placement.height, padding: `${TEXT_PADDING_Y}px ${TEXT_PADDING_X}px` }}
         />
     )
 }

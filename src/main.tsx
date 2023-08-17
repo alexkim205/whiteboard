@@ -3,7 +3,7 @@ import App from './App'
 import './index.css'
 import {resetContext} from "kea";
 
-resetContext()
+resetContext({})
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <App />

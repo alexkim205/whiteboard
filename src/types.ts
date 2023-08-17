@@ -47,8 +47,17 @@ export interface AddableElement {
 }
 
 export interface ElementComponentProps {
+    id: string
     value: string
     onChange: (element: Partial<AddableElement> | null) => void
     className?: string
+    flush?: boolean
     placement: ElementPlacement
+}
+
+export interface DragItem {
+    type: string
+    id: string
+    top: number
+    left: number
 }

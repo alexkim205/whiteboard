@@ -2,9 +2,13 @@ import {actions, connect, defaults, kea, key, listeners, path, props, reducers, 
 import {BrushSize, CanvasInteractionHandlers, CanvasState, EMPTY_CANVAS_INTERACTION_HANDLERS, Tool} from "../types"
 import type {canvasLogicType} from "./canvasLogicType";
 import {addableCanvasLogic} from "../blocks/addableCanvasLogic";
+import {mouseLogic} from "./mouseLogic";
+import {BORDER_WIDTH, TEXT_PADDING_X, TEXT_SIZE} from "../blocks/TextElement";
+import {TOOLBAR_HEIGHT} from "./Toolbar";
+import {EMOJI_PADDING} from "../blocks/EmojiElement";
 
 export interface CanvasLogicProps {
-    id: number // Canvas id that can be stored in the backend
+    id?: number // Canvas id that can be stored in the backend
 }
 
 export const canvasLogic = kea<canvasLogicType>([
@@ -12,21 +16,20 @@ export const canvasLogic = kea<canvasLogicType>([
     path(["src", "canvasLogic"]),
     key((props) => props.id ?? 'global'),
     connect((props: CanvasLogicProps)=> ({
-        actions: [addableCanvasLogic(props), ['addElement']],
-        values: [addableCanvasLogic(props), ['elementToAdd']],
+        actions: [addableCanvasLogic(props), ['addElement'], mouseLogic, ["setMouseDown"]],
+        values: [addableCanvasLogic(props), ['elementToAdd'], mouseLogic, ["mouseDown"]],
     })),
     defaults(() => ({
         canvas: null as HTMLCanvasElement | null,
         tool: Tool.Draw as Tool,
-        mouseDown: false,
         brushSize: BrushSize.Small as BrushSize,
         canvasState: CanvasState.Editing as CanvasState
     })),
     actions(() => ({
         initCanvas:(canvas: HTMLCanvasElement | null) => ({canvas}),
         selectTool: (tool: Tool) => ({tool}),
-        setMouseDown: (mouseDown: boolean) => ({mouseDown}),
         setBrushSize: (brushSize: number) => ({brushSize}),
+        bakeIntoCanvas: true
     })),
     reducers(() => ({
         canvas: {
@@ -34,9 +37,6 @@ export const canvasLogic = kea<canvasLogicType>([
         },
         tool: {
             selectTool: (_, {tool}) => tool
-        },
-        mouseDown: {
-            setMouseDown: (_, {mouseDown}) => mouseDown
         },
         brushSize: {
             setBrushSize: (_, {brushSize}) => brushSize
@@ -52,12 +52,28 @@ export const canvasLogic = kea<canvasLogicType>([
             }
         },
         selectTool: ({tool}) => {
+            // If there was an addable element, bake it into the main canvas before switching to the next tool
+            actions.bakeIntoCanvas()
+
             // Conditionally render addable canvas elements depending on which tool is selected
             if (tool === Tool.Text || tool === Tool.Emoji) {
                 actions.addElement(tool)
-            } else {
-                actions.addElement(null)
             }
+        },
+        bakeIntoCanvas: () => {
+            if (values.ctx && values.elementToAdd) {
+                values.ctx.fillStyle="#000000"
+                values.ctx.font = `${TEXT_SIZE}px sans-serif`
+
+                // Different baking positions because padding is different for emoji and text elements
+                if (values.elementToAdd.type === Tool.Text) {
+                    values.ctx.fillText(values.elementToAdd.value, values.elementToAdd.placement.x + TEXT_PADDING_X + BORDER_WIDTH, values.elementToAdd.placement.y + TOOLBAR_HEIGHT + BORDER_WIDTH);
+                } else if (values.elementToAdd.type === Tool.Emoji) {
+                    values.ctx.fillText(values.elementToAdd.value, values.elementToAdd.placement.x + EMOJI_PADDING, values.elementToAdd.placement.y + TOOLBAR_HEIGHT - EMOJI_PADDING * 2);
+                }
+            }
+
+            actions.addElement(null)
         }
     })),
     selectors(({actions}) => ({
@@ -65,6 +81,8 @@ export const canvasLogic = kea<canvasLogicType>([
             (s) => [s.canvas],
             (canvas) => canvas?.getContext("2d")
         ],
+        isAddableTool: [(s) => [s.tool], (tool) => [Tool.Text, Tool.Emoji].includes(tool)],
+        isDrawableTool: [(s) => [s.tool], (tool) => [Tool.Draw, Tool.Erase].includes(tool)],
         canvasInteractionHandlers: [
             (s) => [s.canvas, s.ctx, s.tool, s.mouseDown, s.brushSize],
             (canvas, ctx, tool, mouseDown, brushSize): CanvasInteractionHandlers => {
