@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import {useValues} from "kea";
-import {canvasLogic} from "./canvasLogic";
+import {canvasLogic} from "../canvas/canvasLogic";
 import {LuHand} from "react-icons/lu";
 import {mouseLogic} from "./mouseLogic";
 
@@ -8,7 +8,7 @@ const HOVER_BRUSH_SIZE = 48
 
 export function Mouse(): JSX.Element {
     const {mouseDown, position} = useValues(mouseLogic)
-    const {brushSize, isAddableTool} = useValues(canvasLogic)
+    const {brushSize, isAddableTool} = useValues(canvasLogic({id: 1}))
 
     return isAddableTool ? <div
         id="dynamiccursor"

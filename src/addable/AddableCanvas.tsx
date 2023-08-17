@@ -1,15 +1,15 @@
-import {TOOLBAR_HEIGHT} from "./Toolbar";
+import {TOOLBAR_HEIGHT} from "../components/Toolbar";
 import {DragItem, ElementComponentProps, Tool} from "../types";
-import {TextElement} from "../blocks/TextElement";
-import {EmojiElement} from "../blocks/EmojiElement";
+import {TextElement} from "./TextElement";
+import {EmojiElement} from "./EmojiElement";
 import {useActions, useValues} from "kea";
-import {addableCanvasLogic} from "../blocks/addableCanvasLogic";
+import {addableCanvasLogic} from "./addableCanvasLogic";
 import {useDrop, XYCoord} from "react-dnd";
-import {mouseLogic} from "./mouseLogic";
+import {mouseLogic} from "../components/mouseLogic";
 
 export function AddableCanvas(): JSX.Element {
-    const {elementToAdd} = useValues(addableCanvasLogic)
-    const {setElement} = useActions(addableCanvasLogic)
+    const {elementToAdd} = useValues(addableCanvasLogic({id: 1}))
+    const {setElement} = useActions(addableCanvasLogic({id: 1}))
     const {setMouseDown, setPosition} = useActions(mouseLogic)
 
     const [, drop] = useDrop(

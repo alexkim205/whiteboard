@@ -1,5 +1,5 @@
 import {kea, key, props, path, actions, reducers, defaults} from "kea";
-import {CanvasLogicProps} from "../components/canvasLogic";
+import {CanvasLogicProps} from "../canvas/canvasLogic";
 import {AddableElement, AddableTool, Tool} from "../types";
 import {TOOLBAR_HEIGHT} from "../components/Toolbar";
 import type { addableCanvasLogicType } from "./addableCanvasLogicType";

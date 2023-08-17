@@ -1,27 +1,30 @@
-# React + TypeScript + Vite
+# Classkick Front End Engineering Take Home Project - Alex Kim
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Intro
 
-Currently, two official plugins are available:
+Hi Classkick team! It was great talking with Sandip over video, and I thank you for taking the time to review my take home assignment. Looking forward to hearing from you soon.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Project Structure
 
-## Expanding the ESLint configuration
+I've broken down this project into two folders:
+- `/canvas` - Contains main canvas component and associated data logic
+- `/addable` - Everything and anything related to adding an element to a canvas
+- `/components` - Other components
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## State Management
 
-- Configure the top-level `parserOptions` property like this:
+The most important aspect of this project to keep organized for me was how state would flow throughout the frontend. I used a state management library called [KeaJS](https://keajs.org/) which uses Redux under the hood.
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+I tried to keep store logic localized to the components that would be consuming its values and actions. These are kept in files named `*Logic.ts`:
+- `canvasLogic.ts` - The main store that keeps a reference to the canvas as well as various parameters such as selected tool and brush size. It also contains logic for setState type actions that are called to initialize our canvas.
+- `addableCanvasLogic.ts` - When we're adding elements such as text, emojis, and images, I draw an absolutely position div over the canvas to allow the user to edit and drag the elements around before baking it into the canvas.
+- `mouseLogic.ts` - A globally keyed logic that keeps track of mouse position. This is just used for rendering a custom cursor on certain actions and is purely eye 🍬.
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Api
+
+A barebones mocked api can be found in `/api`. If you open up the developer console, you can see that on page load, data for the specific canvas is fetched. When you click save canvas, you see another log saying that the canvas has been saved. All api methods are debounced by 3 seconds.
+
+## External libraries
+Shamelessly using these libraries:
+- [KeaJS](https://keajs.org/) - state
+- [react-dnd](https://github.com/react-dnd/react-dnd/) - drag-n-drop

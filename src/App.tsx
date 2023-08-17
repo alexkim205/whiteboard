@@ -1,5 +1,5 @@
 import {Toolbar} from "./components/Toolbar";
-import {Canvas} from "./components/Canvas";
+import {Canvas} from "./canvas/Canvas";
 import {Mouse} from "./components/Mouse";
 
 function App() {
