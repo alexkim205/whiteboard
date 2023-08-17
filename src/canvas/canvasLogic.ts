@@ -155,14 +155,6 @@ export const canvasLogic = kea<canvasLogicType>([
                         }
                     }
                 }
-                if (tool === Tool.Text) {
-                    return {
-                        onMouseUp: () => {
-                            actions.setMouseDown(false)
-                            actions.addElement(Tool.Text)
-                        }
-                    }
-                }
                 return EMPTY_CANVAS_INTERACTION_HANDLERS
             }
         ]

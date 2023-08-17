@@ -1,5 +1,5 @@
 import {actions, afterMount, beforeUnmount, defaults, kea, listeners, path, reducers} from "kea";
-import {XYCoord} from "react-dnd";
+import {XYCoord} from "react-dnd/dist/types/monitors";
 import type { mouseLogicType } from "./mouseLogicType";
 
 export const mouseLogic = kea<mouseLogicType>([
