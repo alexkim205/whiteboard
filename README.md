@@ -4,6 +4,14 @@
 
 Hi Classkick team! It was great talking with Sandip over video, and I thank you for taking the time to review my take home assignment. Looking forward to hearing from you soon.
 
+## Setup
+
+```bash
+// Built on Node v20.3.1
+pnpm install
+pnpm dev
+```
+
 ## Project Structure
 
 I've broken down this project into two folders:
