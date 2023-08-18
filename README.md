@@ -32,7 +32,7 @@ I tried to keep store logic localized to the components that would be consuming 
 
 ## Api
 
-A barebones mocked api can be found in `/api`. If you open up the developer console, you can see that on page load, data for the specific canvas is fetched. When you click save canvas, you see another log saying that the canvas has been saved. All api methods are debounced by 3 seconds.
+A barebones mocked api can be found in `api.ts`. If you open up the developer console, you can see that on page load, data for the specific canvas is fetched. When you click save canvas, you see another log saying that the canvas has been saved. All api methods are debounced by 3 seconds.
 
 ## External libraries
 Shamelessly using these libraries:
